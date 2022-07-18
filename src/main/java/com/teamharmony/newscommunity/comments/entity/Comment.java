@@ -25,6 +25,7 @@ public class Comment extends Timestamped {
     @Id
     private Long commentId;
     @Size(max = 300, message = "글자수 초과")
+    @Column(length = 1000)
     private String content;
     private String newsId;
 
