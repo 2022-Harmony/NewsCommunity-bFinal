@@ -1,5 +1,6 @@
 package com.teamharmony.newscommunity.users.service;
 
+import com.teamharmony.newscommunity.exception.InvalidRequestException;
 import com.teamharmony.newscommunity.users.dto.*;
 import com.teamharmony.newscommunity.users.vo.ProfileVO;
 import com.teamharmony.newscommunity.users.entity.*;
@@ -123,7 +124,7 @@ public class UserService implements UserDetailsService {
 	 */
 	public Map<String, String> updateProfile(String username, ProfileVO profileVO) {
 		UserProfile existingProfile = getUser(username).getProfile();	// 해당 유저의 기존 프로필 찾기
-		if (existingProfile == null) throw new IllegalArgumentException(String.format("User profile %s not found", username));
+		if (existingProfile == null) throw new InvalidRequestException("사용자의 기존 프로필을 찾을 수 없습니다.", "username: "+username, "U401");
 		
 		if (profileVO.getFile()!=null) {
 			MultipartFile file = profileVO.getFile();
@@ -164,7 +165,7 @@ public class UserService implements UserDetailsService {
 	 */
 	public String getProfileImageUrl(String username) {
 		UserProfile profile = getUser(username).getProfile();
-		if (profile == null) throw new IllegalArgumentException(String.format("User profile %s not found", username));
+		if (profile == null) throw new InvalidRequestException("사용자의 프로필을 찾을 수 없습니다.", "사용자 ID: "+username, "U401");
 		String path = String.format("%s/%s", bucketName,username);
 		// 버킷에서 프로필 사진 가져오기
 		if (!profile.getProfile_pic().equals("default")) {
@@ -184,7 +185,7 @@ public class UserService implements UserDetailsService {
 	private void isImage(MultipartFile file) {
 		if (!Arrays.asList(IMAGE_JPEG.getMimeType(), IMAGE_PNG.getMimeType(), IMAGE_GIF.getMimeType())
 		           .contains(file.getContentType()))
-			throw new IllegalArgumentException("File must be an image [ "+ file.getContentType() +" ]");
+			throw new InvalidRequestException("파일이 이미지가 아닙니다.", "파일 유형: "+file.getContentType(), "U402");
 	}
 	
 	/**
@@ -197,7 +198,7 @@ public class UserService implements UserDetailsService {
 		log.info("Adding role {} to user {}", roleName, username);
 		User user = getUser(username);
 		Role role = getRole(roleName);
-		if (role == null) throw new IllegalArgumentException(String.format("%s not found", roleName));
+		if (role == null) throw new InvalidRequestException("해당 권한을 찾을 수 없습니다", "권한명: "+roleName, "U403");
 		UserRole userRole = new UserRole(user, role);
 		userRoleRepository.save(userRole);
 	}
