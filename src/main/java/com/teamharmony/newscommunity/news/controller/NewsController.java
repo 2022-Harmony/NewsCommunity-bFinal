@@ -1,5 +1,6 @@
 package com.teamharmony.newscommunity.news.controller;
 
+import com.amazonaws.Response;
 import com.teamharmony.newscommunity.common.ApiResponse;
 import com.teamharmony.newscommunity.news.dto.CreateNewsAccessLogRequestDto;
 import com.teamharmony.newscommunity.news.dto.NewsDetailResponseDto;
@@ -27,7 +28,7 @@ public class NewsController {
      */
     @GetMapping("")
     public ResponseEntity<List<NewsDetailResponseDto>> getNews(){
-        return ResponseEntity.status(HttpStatus.OK).body(newsService.getNews());
+        return ResponseEntity.ok(newsService.getNews());
     }
 
     /**
@@ -36,8 +37,8 @@ public class NewsController {
      * @return      뉴스 상세 정보가 담긴 ResponseNewsDetailDTO
      */
     @GetMapping("/details/{newsId}")
-    public ApiResponse<NewsDetailResponseDto> getNewsDetial(@PathVariable String newsId){
-        return ApiResponse.success("result", newsService.getNewsDetail(newsId));
+    public ResponseEntity<NewsDetailResponseDto> getNewsDetial(@PathVariable String newsId){
+        return ResponseEntity.ok(newsService.getNewsDetail(newsId));
     }
 
     /**
@@ -46,9 +47,9 @@ public class NewsController {
      * @See NewsService#setNewsAccessLog
      */
     @PostMapping("/logs")
-    public ApiResponse<String> createNewsAccessLog(@RequestBody CreateNewsAccessLogRequestDto requestCreateNewsAccessLogDTO){
+    public ResponseEntity<String> createNewsAccessLog(@RequestBody CreateNewsAccessLogRequestDto requestCreateNewsAccessLogDTO){
         String newsId = newsService.setNewsAccessLog(requestCreateNewsAccessLogDTO);
-        return ApiResponse.success("result", newsId);
+        return ResponseEntity.ok(newsId);
     }
 
     /**
@@ -56,8 +57,8 @@ public class NewsController {
      * @return 조회수 업데이트 성공여부
      */
     @PutMapping("/views/{newsId}")
-    public ApiResponse<String> UpdateView(@PathVariable String newsId){
+    public ResponseEntity<String> UpdateView(@PathVariable String newsId){
         newsService.addView(newsId);
-        return ApiResponse.success("result", "success");
+        return ResponseEntity.ok("success");
     }
 }
