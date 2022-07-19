@@ -23,19 +23,21 @@ public class BookmarkController {
      * @return 생성된 북마크의 식별번호(Id: String, based on UUID4)
      */
     @PostMapping("")
-    public ApiResponse<String> createBookmark(@RequestBody BookmarkRequestDto requestBookmarkDTO){
-        return ApiResponse.success("result", bookmarkService.createBookmark(requestBookmarkDTO));
+    public ResponseEntity<String> createBookmark(@RequestBody BookmarkRequestDto requestBookmarkDTO){
+        return ResponseEntity.status(HttpStatus.OK).body(bookmarkService.createBookmark(requestBookmarkDTO));
     }
+
 
     /**
      * detail.html에서 해당 뉴스의 id와 읽고 있는 userId를 가지고 사용자가 뉴스를 북마크했는지 판별
-     * @param requestBookmarkDTO
+     * @param newsId
+     * @param userId
      * @return 해당 뉴스에 대한 사용자의 북마크 여부 (True||False)
      */
     @GetMapping("")
-    public ApiResponse<Boolean> isBookmark(@RequestParam String newsId, @RequestParam String userId){
+    public ResponseEntity<Boolean> isBookmark(@RequestParam String newsId, @RequestParam String userId){
         BookmarkRequestDto requestBookmarkDTO = new BookmarkRequestDto(newsId, userId, null);
-        return ApiResponse.success("result", bookmarkService.isBookmarkCheck(requestBookmarkDTO));
+        return ResponseEntity.status(HttpStatus.OK).body(bookmarkService.isBookmarkCheck(requestBookmarkDTO));
     }
 
 
@@ -45,8 +47,8 @@ public class BookmarkController {
      * @return 해당 뉴스에 대한 사용자의 북마크 여부 (True||False)
      */
     @DeleteMapping("")
-    public ApiResponse<String> cancel(@RequestBody BookmarkRequestDto requestBookmarkDTO){
-        return ApiResponse.success("result", bookmarkService.deleteBookmark(requestBookmarkDTO));
+    public ResponseEntity<String> cancel(@RequestBody BookmarkRequestDto requestBookmarkDTO){
+        return ResponseEntity.status(HttpStatus.OK).body(bookmarkService.deleteBookmark(requestBookmarkDTO));
     }
 
     /**
