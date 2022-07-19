@@ -3,6 +3,7 @@ package com.teamharmony.newscommunity.aop.advice;
 import com.teamharmony.newscommunity.exception.Error;
 import com.teamharmony.newscommunity.exception.ErrorResponse;
 import com.teamharmony.newscommunity.exception.InvalidRequestException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalHandlerException {
     @ExceptionHandler(value = { InvalidRequestException.class })
     public ResponseEntity<Object> handleApiRequestException(InvalidRequestException ex, HttpServletRequest httpServletRequest) {
@@ -37,6 +39,7 @@ public class GlobalHandlerException {
                 .code(ex.getCode())
                 .build();
 
+        log.error("Oops so sick, harmony: {}", message , ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
