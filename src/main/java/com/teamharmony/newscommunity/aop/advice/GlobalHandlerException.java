@@ -75,6 +75,7 @@ public class GlobalHandlerException {
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity exception(Exception e){
         System.out.println(e.getClass().getName());
+        log.error("Oops so sick, harmony: {}", e.getClass().getName() , e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
     }
 }

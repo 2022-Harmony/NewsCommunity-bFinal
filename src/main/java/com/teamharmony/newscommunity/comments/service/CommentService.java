@@ -15,12 +15,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 @Service
@@ -46,23 +49,20 @@ public class CommentService {
      * @param newsId
      * @return
      */
-    public List<CommentResponseDto> findComments(String newsId, int page, int size, String currentUser) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<CommentResponseDto> findComments(String newsId, int page, int size, String sortBy, boolean isAsc, String currentUser) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
         Page<Comment> commentList = commentRepository.findAllByNewsId(newsId, pageable);
 
 
         if (commentList == null) {
             throw new InvalidRequestException("댓글을 불러올 수 없습니다", "뉴스 아이디가 댓글에 잘 저장됐는지 확인하세요", "C402");
         }
-        return commentList.stream().map(comment -> CommentResponseDto.builder()
-                        .commentId(comment.getCommentId())
-                        .content(comment.getContent())
-                        .modifiedAt(comment.getModifiedAt())
-                        .createdAt(comment.getCreatedAt())
-                        .profileResponseDto(new ProfileResponseDto(comment.getUser().getProfile()))
-                        .like(likeCheck(comment.getCommentId(), currentUser))
-                        .build())
-                        .collect(Collectors.toList());
+        Page<CommentResponseDto> dtoList = commentList.map(CommentResponseDto::toDto);
+        dtoList.forEach(dto -> dto.likeUser(likeCheck(dto.getCommentId(), currentUser)));
+        return dtoList;
     }
 
     private Boolean likeCheck(Long commentId, String currentUser) {
@@ -111,21 +111,16 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
-    public List<CommentResponseDto> getCommentsByUserId(String username, int page, int size, String currentUser) {
+    public Page<CommentResponseDto> getCommentsByUserId(String username, int page, int size, String currentUser) {
         User user = getUser(username);
         Long userId = user.getId();
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Comment> commentList = commentRepository.findByUser_Id(userId, pageable);
-        return commentList.stream().map(comment -> CommentResponseDto.builder()
-                        .commentId(comment.getCommentId())
-                        .content(comment.getContent())
-                        .modifiedAt(comment.getModifiedAt())
-                        .createdAt(comment.getCreatedAt())
-                        .profileResponseDto(new ProfileResponseDto(comment.getUser().getProfile()))
-                        .like(likeCheck(comment.getCommentId(), currentUser))
-                        .build())
-                .collect(Collectors.toList());
+
+        Page<CommentResponseDto> dtoList = commentList.map(CommentResponseDto::toDto);
+        dtoList.forEach(dto -> dto.likeUser(likeCheck(dto.getCommentId(), currentUser)));
+        return dtoList;
     }
 		
 		private User getUser(String username) {

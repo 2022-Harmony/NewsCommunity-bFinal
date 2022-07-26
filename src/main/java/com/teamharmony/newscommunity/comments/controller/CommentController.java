@@ -6,6 +6,7 @@ import com.teamharmony.newscommunity.comments.dto.CommentResponseDto;
 import com.teamharmony.newscommunity.comments.service.CommentService;
 import com.teamharmony.newscommunity.common.annotation.CurrentUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,11 +41,13 @@ public class CommentController {
      * @return 해당 뉴스 아이디에 해당하는 댓글 리스트
      */
     @GetMapping("/comments/{news_id}/{currentUser}")
-    public ResponseEntity<List<CommentResponseDto>> getComment(@PathVariable String news_id,
-                                                               @RequestParam("page") int page,
-                                                               @RequestParam("size") int size,
-                                                               @PathVariable String currentUser) {
-        return ResponseEntity.ok().body(commentService.findComments(news_id, (page-1), size, currentUser));
+    public ResponseEntity<Page<CommentResponseDto>> getComment(@PathVariable String news_id,
+                                                @RequestParam("page") int page,
+                                                @RequestParam("size") int size,
+                                                @RequestParam("sortBy") String sortBy,
+                                                @RequestParam("isAsc") boolean isAsc,
+                                                @PathVariable String currentUser) {
+        return ResponseEntity.ok().body(commentService.findComments(news_id, (page-1), size, sortBy, isAsc, currentUser));
     }
 
 
@@ -98,7 +101,7 @@ public class CommentController {
     }
 
     @GetMapping("/comments/profile/{username}/{currentUser}")
-    public ResponseEntity<List<CommentResponseDto>> getCommentsOnProfilePage(@PathVariable String username,
+    public ResponseEntity<Page<CommentResponseDto>> getCommentsOnProfilePage(@PathVariable String username,
                                                                              @RequestParam int page,
                                                                              @RequestParam int size,
                                                                              @PathVariable String currentUser) {

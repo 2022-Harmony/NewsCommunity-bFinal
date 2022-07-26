@@ -33,7 +33,7 @@ public class ParameterAop {
 
     @AfterReturning(value= "cut()", returning =  "returnObj")
     public void afterReturn(JoinPoint joinPoint, Object returnObj){
-        log.error("response value: ", returnObj);
+        log.info("response value: ", returnObj);
         System.out.println(returnObj);
     }
 }
