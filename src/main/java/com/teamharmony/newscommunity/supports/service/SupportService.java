@@ -1,18 +1,20 @@
 package com.teamharmony.newscommunity.supports.service;
 
+import com.teamharmony.newscommunity.comments.dto.CommentResponseDto;
 import com.teamharmony.newscommunity.supports.dto.SupportRequestDto;
 import com.teamharmony.newscommunity.supports.dto.SupportRequestUpdateDto;
 import com.teamharmony.newscommunity.supports.dto.SupportResponseDto;
 import com.teamharmony.newscommunity.supports.entity.Support;
 import com.teamharmony.newscommunity.supports.repository.SupportRepository;
+import com.teamharmony.newscommunity.users.dto.ProfileResponseDto;
 import com.teamharmony.newscommunity.users.entity.User;
 import com.teamharmony.newscommunity.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,19 +44,15 @@ public class SupportService {
      */
     public List<SupportResponseDto> getSupportsList() {
         List<Support> supportList = supportRepository.findAllByOrderByCreatedAtDesc();
-        List<SupportResponseDto> resultList = new LinkedList<>();
-        for (Support supportItems : supportList) {
-            SupportResponseDto supportResponseDto = SupportResponseDto.builder()
-                    .username(supportItems.getUsername())
-                    .post_title(supportItems.getPost_title())
-                    .post_content(supportItems.getPost_content())
-                    .created_at(supportItems.getCreatedAt())
-                    .modified_at(supportItems.getModifiedAt())
-                    .id(supportItems.getSupport_id())
-                    .build();
-            resultList.add(supportResponseDto);
-        }
-        return resultList;
+        return supportList.stream().map(support -> SupportResponseDto.builder()
+                .username(support.getUsername())
+                .post_title(support.getPost_title())
+                .post_content(support.getPost_content())
+                .created_at(support.getCreatedAt())
+                .modified_at(support.getModifiedAt())
+                .id(support.getSupport_id())
+                .build())
+            .collect(Collectors.toList());
     }
 
     /**
@@ -64,19 +62,15 @@ public class SupportService {
      */
     public List<SupportResponseDto> getMySupportList(String username) {
         List<Support> supportList = supportRepository.findAllByUsernameOrderByCreatedAtDesc(username);
-        List<SupportResponseDto> resultList = new LinkedList<>();
-        for (Support supportItems : supportList) {
-            SupportResponseDto supportResponseDto = SupportResponseDto.builder()
-                    .username(supportItems.getUsername())
-                    .post_title(supportItems.getPost_title())
-                    .post_content(supportItems.getPost_content())
-                    .created_at(supportItems.getCreatedAt())
-                    .modified_at(supportItems.getModifiedAt())
-                    .id(supportItems.getSupport_id())
-                    .build();
-            resultList.add(supportResponseDto);
-        }
-        return resultList;
+        return supportList.stream().map(support -> SupportResponseDto.builder()
+                .username(support.getUsername())
+                .post_title(support.getPost_title())
+                .post_content(support.getPost_content())
+                .created_at(support.getCreatedAt())
+                .modified_at(support.getModifiedAt())
+                .id(support.getSupport_id())
+                .build())
+            .collect(Collectors.toList());
     }
 
     /**

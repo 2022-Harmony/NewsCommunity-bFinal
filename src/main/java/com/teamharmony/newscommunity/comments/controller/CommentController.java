@@ -85,21 +85,6 @@ public class CommentController {
         return ResponseEntity.ok().body(commentService.getCommentCount(news_id));
     }
 
-    /**
-     * 파라미터로 받은 direction에 따라 댓글 리스트를 정렬한 뒤 반환합니다.
-     * @param news_id
-     * @param direction
-     * @return 재정렬된 댓글 리스트
-     */
-    @GetMapping("/user/comments/sort/{news_id}")
-    public ResponseEntity<List<CommentResponseDto>> sortComments(@PathVariable String news_id, @RequestParam String direction) {
-        if (direction.equals("DESC")) {
-            return ResponseEntity.ok().body(commentService.getSortedCommentsDesc(news_id));
-        } else {
-            return ResponseEntity.ok().body(commentService.getSortedCommentsAsc(news_id));
-        }
-    }
-
     @GetMapping("/comments/profile/{username}/{currentUser}")
     public ResponseEntity<Page<CommentResponseDto>> getCommentsOnProfilePage(@PathVariable String username,
                                                                              @RequestParam int page,

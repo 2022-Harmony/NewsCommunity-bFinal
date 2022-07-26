@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     Page<Comment> findAllByNewsId(String newsId, Pageable pageable);
-    List<Comment> findByNewsIdOrderByCreatedAtDesc(String newsId);
-    List<Comment> findByNewsIdOrderByCreatedAtAsc(String newsId);
     Page<Comment> findByUser_Id(Long userId, Pageable pageable);
     Integer countByNewsId(String newsId);
 }

@@ -87,30 +87,6 @@ public class CommentService {
         commentRepository.deleteById(id);
     }
 
-    public List<CommentResponseDto> getSortedCommentsDesc(String newsId) {
-        List<Comment> commentList = commentRepository.findByNewsIdOrderByCreatedAtDesc(newsId);
-        return commentList.stream().map(comment -> CommentResponseDto.builder()
-                        .commentId(comment.getCommentId())
-                        .content(comment.getContent())
-                        .modifiedAt(comment.getModifiedAt())
-                        .createdAt(comment.getCreatedAt())
-                        .profileResponseDto(new ProfileResponseDto(comment.getUser().getProfile()))
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-    public List<CommentResponseDto> getSortedCommentsAsc(String newsId) {
-        List<Comment> commentList = commentRepository.findByNewsIdOrderByCreatedAtAsc(newsId);
-        return commentList.stream().map(comment -> CommentResponseDto.builder()
-                        .commentId(comment.getCommentId())
-                        .content(comment.getContent())
-                        .modifiedAt(comment.getModifiedAt())
-                        .createdAt(comment.getCreatedAt())
-                        .profileResponseDto(new ProfileResponseDto(comment.getUser().getProfile()))
-                        .build())
-                .collect(Collectors.toList());
-    }
-
     public Page<CommentResponseDto> getCommentsByUserId(String username, int page, int size, String currentUser) {
         User user = getUser(username);
         Long userId = user.getId();
@@ -123,7 +99,7 @@ public class CommentService {
         return dtoList;
     }
 		
-		private User getUser(String username) {
-			return userRepository.findByUsername(username);
-		}
+    private User getUser(String username) {
+        return userRepository.findByUsername(username);
+    }
 }
