@@ -1,8 +1,6 @@
 package com.teamharmony.newscommunity.users.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -10,10 +8,9 @@ import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Data
+@Getter
 public class Role {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)

@@ -37,4 +37,9 @@ public class LikesController {
     public ResponseEntity<Integer> getLikedCommentsCountByCommentId(@PathVariable Long commentId) {
         return ResponseEntity.ok().body(likesService.LikedCommentsCount(commentId));
     }
+
+    @GetMapping("/user/likes/isLiked/{commentId}")
+    public ResponseEntity<Boolean> isLiked(@PathVariable Long commentId, @CurrentUser String username) {
+        return ResponseEntity.ok().body(likesService.isLiked(commentId, username));
+    }
 }

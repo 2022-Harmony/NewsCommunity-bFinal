@@ -49,4 +49,21 @@ public class LikesService {
     public int LikedCommentsCount(Long id) {
         return likesRepository.findByComment_CommentId(id).size();
     }
+
+    public boolean isLiked(Long commentId, String username) {
+        if(username == null) {
+            return false;
+        }
+        User user = userRepository.findByUsername(username);
+        Long userId = user.getId();
+
+        // 좋아요 테이블에서 현재 로그인한 유저가 특정 댓글에 좋아요 한 이력이 있는지 조회합니다.
+        Likes like = likesRepository.findByComment_CommentIdAndUser_Id(commentId, userId);
+
+        if (like == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

@@ -11,13 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.HibernateException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -47,14 +45,14 @@ public class UserController {
 	/**
 	 * 회원 가입 요청 처리
 	 *
-	 * @param 		dto 가입하려는 사용자 ID와 비밀번호를 담은 객체
+	 * @param 		requestDto 가입하려는 사용자 ID와 비밀번호를 담은 객체
 	 * @see   		UserService#signUp
 	 */
 	@PostMapping("/signup")
-	public ResponseEntity<?>signUp(@Valid SignupRequestDto dto) {
+	public ResponseEntity<?>signUp(@RequestBody @Valid SignupRequestDto requestDto) {
 		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/signup").toUriString());
 		try {
-			userService.signUp(dto);
+			userService.signUp(requestDto);
 			return ResponseEntity.created(uri).build();
 		} catch (HibernateException e) {
 			return ResponseEntity.internalServerError().build();
@@ -66,13 +64,13 @@ public class UserController {
 	/**
 	 * 회원 ID 중복 확인
 	 *
-	 * @param 		username 가입하려는 사용자 ID
+	 * @param 		requestDto 가입하려는 사용자 ID
 	 * @return 		중복 여부
 	 * @see				UserService#checkUser
 	 */
 	@PostMapping("/signup/checkdup")
-	public ResponseEntity<?>checkUser(@NotBlank @RequestParam String username) {
-		return ResponseEntity.ok().body(userService.checkUser(username));
+	public ResponseEntity<?>checkUser(@RequestBody @Valid SignupRequestDto.CheckDup requestDto) {
+		return ResponseEntity.ok().body(userService.checkUser(requestDto.username));
 	}
 	
 	/**

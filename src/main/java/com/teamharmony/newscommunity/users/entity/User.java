@@ -18,10 +18,9 @@ import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Data
+@Getter
 public class User  extends Timestamped {
 	@JsonIgnore
 	@Id @GeneratedValue(strategy = IDENTITY)
@@ -63,7 +62,6 @@ public class User  extends Timestamped {
 		supports.add(support);
 	}
 
-
 	@JsonManagedReference
 	@OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
 	private UserProfile profile;
@@ -71,5 +69,9 @@ public class User  extends Timestamped {
 	public User(SignupRequestDto dto) {
 		this.username = dto.getUsername();
 		this.password = dto.getPassword();
+	}
+	
+	public void encodePW(String encodedPW) {
+		this.password = encodedPW;
 	}
 }

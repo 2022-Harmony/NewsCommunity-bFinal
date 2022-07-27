@@ -1,16 +1,13 @@
 package com.teamharmony.newscommunity.users.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Data
+@Getter
 public class UserRole {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id

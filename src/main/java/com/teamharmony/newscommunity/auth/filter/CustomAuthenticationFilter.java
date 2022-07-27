@@ -3,9 +3,9 @@ package com.teamharmony.newscommunity.auth.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.teamharmony.newscommunity.auth.dto.SigninRequestDto;
 import com.teamharmony.newscommunity.auth.entity.Tokens;
 import com.teamharmony.newscommunity.auth.repository.TokensRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,9 +24,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -42,11 +45,16 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 	// 로그인 시도
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		User user = (User) userDetailsService.loadUserByUsername(username);
-		// todo
-		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, password);
+		UsernamePasswordAuthenticationToken authenticationToken = null;
+		try {
+			String username = request.getParameter("username");
+			String password = request.getParameter("password");
+			SigninRequestDto requestDto = new SigninRequestDto(username, password);
+			User user = (User) userDetailsService.loadUserByUsername(requestDto.getUsername());
+			authenticationToken = new UsernamePasswordAuthenticationToken(user, requestDto.getPassword());
+		} catch (Exception e) {
+			setError(response, e);
+		}
 		return authenticationManager.authenticate(authenticationToken);
 	}
 	// 로그인 성공
@@ -98,5 +106,17 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 		
 		response.setContentType(APPLICATION_JSON_VALUE);
 		new ObjectMapper().writeValue(response.getOutputStream(), "success");
+	}
+	private static void setError(HttpServletResponse response, Exception e) {
+		response.setHeader("error", e.getMessage());
+		response.setStatus(FORBIDDEN.value());
+		Map<String, String> error = new HashMap<>();
+		error.put("error_msg", e.getMessage());
+		response.setContentType(APPLICATION_JSON_VALUE);
+		try {
+			new ObjectMapper().writeValue(response.getOutputStream(), error);
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 }

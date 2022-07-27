@@ -2,18 +2,14 @@ package com.teamharmony.newscommunity.users.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.teamharmony.newscommunity.users.vo.ProfileVO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Data
+@Getter
 public class UserProfile {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
@@ -30,17 +26,12 @@ public class UserProfile {
 	@JoinColumn(name = "user_id")
 	private User user;
 	
-	
-	public void setUser(User user) {
-		this.user = user;
-		user.setProfile(this);
-	}
-	
 	@Builder
-	public UserProfile(String nickname, String profile_pic, String profile_info) {
+	public UserProfile(String nickname, String profile_pic, String profile_info, User user) {
 		this.nickname = nickname;
 		this.profile_pic = profile_pic;
 		this.profile_info = profile_info;
+		this.user = user;
 	}
 
 	public void update(ProfileVO vo) {

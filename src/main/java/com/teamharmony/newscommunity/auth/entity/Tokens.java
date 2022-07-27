@@ -1,9 +1,6 @@
 package com.teamharmony.newscommunity.auth.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,11 +10,9 @@ import javax.validation.constraints.Pattern;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Data
-@Builder
+@Getter
 public class Tokens {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -29,6 +24,13 @@ public class Tokens {
 	private String accessToken;
 	@Column(nullable = false)
 	private String refreshToken;
+	
+	@Builder
+	public Tokens(String username, String accessToken, String refreshToken) {
+		this.username = username;
+		this.accessToken = accessToken;
+		this.refreshToken = refreshToken;
+	}
 	
 	public void update(String access_token, String refresh_token) {
 		this.accessToken = access_token;

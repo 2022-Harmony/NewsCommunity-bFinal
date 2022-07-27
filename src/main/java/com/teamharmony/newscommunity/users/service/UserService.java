@@ -86,7 +86,7 @@ public class UserService implements UserDetailsService {
 	 */
 	public void saveUser(User user) {
 		log.info("Saving new user {} to the database", user.getUsername());
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		user.encodePW(passwordEncoder.encode(user.getPassword()));
 		userRepository.save(user);
 	}
 	
@@ -109,9 +109,8 @@ public class UserService implements UserDetailsService {
 		UserProfile profile = UserProfile.builder()
 		                                 .nickname(user.getUsername())
 		                                 .profile_pic("default")
+		                                 .user(user)
 		                                 .build();
-		
-		profile.setUser(user);
 		profileRepository.save(profile);
 	}
 	
@@ -136,7 +135,6 @@ public class UserService implements UserDetailsService {
 			Map<String, String> metadata = extractMetadata(file);
 			
 			try {
-				if(!existingProfile.getProfile_pic().equals("default")) fileStore.delete(path, existingProfile.getProfile_pic()); // 기존 파일 삭제
 				fileStore.save(path, fileName, Optional.of(metadata), file.getInputStream()); // 업데이트 파일 저장
 			} catch (IOException e) {
 				throw new IllegalArgumentException("Failed to save image to s3 cause=", e.getCause());

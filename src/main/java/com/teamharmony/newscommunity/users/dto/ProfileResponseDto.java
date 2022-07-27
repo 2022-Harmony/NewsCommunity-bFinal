@@ -1,12 +1,8 @@
 package com.teamharmony.newscommunity.users.dto;
 
 import com.teamharmony.newscommunity.users.entity.UserProfile;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 public class ProfileResponseDto {
 	private String username;
