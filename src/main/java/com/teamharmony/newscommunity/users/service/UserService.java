@@ -135,7 +135,6 @@ public class UserService implements UserDetailsService {
 			Map<String, String> metadata = extractMetadata(file);
 			
 			try {
-				if(!existingProfile.getProfile_pic().equals("default")) fileStore.delete(path, existingProfile.getProfile_pic()); // 기존 파일 삭제
 				fileStore.save(path, fileName, Optional.of(metadata), file.getInputStream()); // 업데이트 파일 저장
 			} catch (IOException e) {
 				throw new IllegalArgumentException("Failed to save image to s3 cause=", e.getCause());

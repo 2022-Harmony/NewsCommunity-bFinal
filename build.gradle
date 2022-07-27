@@ -33,8 +33,10 @@ dependencies {
     implementation 'com.amazonaws:aws-java-sdk:1.12.253'
     implementation 'org.springframework.boot:spring-boot-starter-validation:2.6.6'
 
-//xss예방 - 네이버 filter
+    //xss예방 - 네이버 filter
     implementation 'com.navercorp.lucy:lucy-xss-servlet:2.0.0'
+    //스웨거 사용을 위한 springfox 추가
+    implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
 }
 
 tasks.named('test') {
