@@ -33,7 +33,7 @@ public class User  extends Timestamped {
 	@NotBlank
 	private String password;
 	private String email;
-	@OneToMany(mappedBy="user", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy="user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Collection<UserRole> userRoles = new ArrayList<>();
 
 	@JsonBackReference
@@ -63,7 +63,7 @@ public class User  extends Timestamped {
 	}
 
 	@JsonManagedReference
-	@OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
 	private UserProfile profile;
 
 	public User(SignupRequestDto dto) {
