@@ -3,6 +3,11 @@ package com.teamharmony.newscommunity.exception;
 import lombok.Builder;
 import lombok.Getter;
 
+
+/**
+ * IllegalArgumentException을 상속받는 예외 생성
+ * @author hyeoKing
+ */
 @Getter
 public class InvalidRequestException extends IllegalArgumentException{
     private String invalidValue;

@@ -2,11 +2,11 @@ package com.teamharmony.newscommunity.news.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.teamharmony.newscommunity.common.ApiResponse;
-import com.teamharmony.newscommunity.news.dto.NewsDetailResponseDto;
-import com.teamharmony.newscommunity.news.entity.NewsTable;
-import com.teamharmony.newscommunity.news.service.NewsService;
-import com.teamharmony.newscommunity.auth.repository.TokensRepository;
+import com.teamharmony.newscommunity.domain.auth.repository.TokensRepository;
+import com.teamharmony.newscommunity.domain.news.controller.NewsController;
+import com.teamharmony.newscommunity.domain.news.dto.NewsDetailResponseDto;
+import com.teamharmony.newscommunity.domain.news.entity.NewsTable;
+import com.teamharmony.newscommunity.domain.news.service.NewsService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -27,19 +27,6 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-//1.  퓨어 자바, 테스트 먼저 보기 => 어떻게? => junit 거의 쓰긴 하지만, 프레임 워크보다 테스트에 대한 것부터 이해
-// ex) 단위, 기능 인수 테스트 등 --, 테스트 왜 해야 되는지에 대해 이해
-// 책, 강의 추천: 백기선(장기적으로, 시간 투자): https://www.inflearn.com/course/the-java-application-test#curriculum,
-
-//2.  스프링의 구조? => 목 객체 이해를 위해 필요  => 어떻게 공부해? => 스프링 컨테이너, 빈, 의존성주입,
-//3.  JPA는 김영한니 ㅁ책
-
-// 1. 테스트 코드 디버깅??
-// 2. NewsMockConfig 나누는법?
-// 3.인코딩이 이상하게 돼
-// .addFilters(new CharacterEncodingFilter("UTF-8", true))
-
-
 
 @EnableMockMvc
 @MockBean(JpaMetamodelMappingContext.class)
@@ -57,9 +44,6 @@ class NewsControllerTest {
 
     @MockBean
     NewsService newsService;
-    @MockBean
-    ApiResponse apiResponse;
-
 
     @Test
     @DisplayName("getNewsDetailTest() Connect")

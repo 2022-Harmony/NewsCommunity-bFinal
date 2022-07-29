@@ -38,3 +38,5 @@ out/
 
 ### application_log ###
 /application_log
+
+*.gz

@@ -1,11 +1,12 @@
 package com.teamharmony.newscommunity.news.service;
 
-import com.teamharmony.newscommunity.news.dto.CreateNewsAccessLogRequestDto;
-import com.teamharmony.newscommunity.news.dto.NewsDetailResponseDto;
-import com.teamharmony.newscommunity.news.entity.NewsAccessLog;
-import com.teamharmony.newscommunity.news.entity.NewsTable;
-import com.teamharmony.newscommunity.news.repository.NewsAccessLogRepository;
-import com.teamharmony.newscommunity.news.repository.NewsRepository;
+import com.teamharmony.newscommunity.domain.news.dto.CreateNewsAccessLogRequestDto;
+import com.teamharmony.newscommunity.domain.news.dto.NewsDetailResponseDto;
+import com.teamharmony.newscommunity.domain.news.entity.NewsAccessLog;
+import com.teamharmony.newscommunity.domain.news.entity.NewsTable;
+import com.teamharmony.newscommunity.domain.news.repository.NewsAccessLogRepository;
+import com.teamharmony.newscommunity.domain.news.repository.NewsRepository;
+import com.teamharmony.newscommunity.domain.news.service.NewsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,17 +29,23 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
+
+/**
+ * NewsService에 대한 서비스 계층의 테스트코드
+ * @author hyoeKing
+ */
 @ExtendWith(MockitoExtension.class)
 class NewsServiceTest {
 
     @Nested
     @DisplayName("뉴스 접근 기록 관련 테스트")
     class NewsAccessTest {
-        @Mock                                                       // 레포지 토리 직접 접근을 막기 위해, 목 객체로 주입받아 사용
+        @Mock                                                            // 레포지 토리 직접 접근을 막기 위해, 목 객체로 주입받아 사용
         private NewsAccessLogRepository newsAccessLogRepository;         // newsAccess관련 서비스를 위한 레포지토리
 
-        @InjectMocks                                                // 목을 주입받아 사용할 service 등록
+        @InjectMocks                                                    // 목을 주입받아 사용할 service 등록
         private NewsService newsService;                                // 뉴스 접근 기록 생성, 조회수 증가 및 뉴스 정보 listing등의 기능을 하는 서비스
+
 
         @Test
         @DisplayName("뉴스 접근 기록 생성 테스트")
@@ -57,6 +64,7 @@ class NewsServiceTest {
         }
     }
 
+
     @Nested
     @DisplayName("뉴스 정보 관련 테스트")
     class NewsSeletTest{
@@ -66,7 +74,16 @@ class NewsServiceTest {
         private NewsRepository newsRepository;
         @InjectMocks
         private NewsService newsService;
-        private NewsTable newsTable = new NewsTable("test-uuid", "테스트 제목", "테스트 요약", "테스트 이미지주소", "테스트 뉴스 주소", "테스트 설명", "테스트작성 시간", 1L);
+        private NewsTable newsTable = NewsTable.builder()
+                .id("test-uuid")
+                .title("테스트 제목")
+                .summary("테스트 요약")
+                .image_url("테스트 이미지주소")
+                .news_url("테스트 뉴스 주소")
+                .explains("테스트 설명")
+                .write_time("테스트작성 시간")
+                .view(1L)
+                .build();
         @BeforeEach
         void setup() {
             newsTable.setId("test-uuid");
@@ -106,12 +123,13 @@ class NewsServiceTest {
             assertEquals(actual.getImage_url(), expect.getImage_url());
         }
 
+
         @DisplayName("뉴스 정보 일괄 조회 테스트")
         @Test
         void getNews(){
-            doReturn(newsList()).when(newsRepository).findAll();                // 1. given: newsRepository에서 findall을 호출시, 아래 newsList()를 통해 생성된 List<newsTable>이 반환되도록
-            final List<NewsDetailResponseDto> expect = newsService.getNews();               // 2. when:  newsService의 getNews()가 호출되었을 때, 나온 ResponseNewsDTO값을 expect에 할당
-            assertThat(expect.size()).isEqualTo(5); // 3. Then:   expect의 크기가 5인지(예상하는 리스트 크기(5)) 확인
+            doReturn(newsList()).when(newsRepository).findAll();                             // 1. given: newsRepository에서 findall을 호출시, 아래 newsList()를 통해 생성된 List<newsTable>이 반환되도록
+            final List<NewsDetailResponseDto> expect = newsService.getNews();                // 2. when:  newsService의 getNews()가 호출되었을 때, 나온 ResponseNewsDTO값을 expect에 할당
+            assertThat(expect.size()).isEqualTo(5);                                 // 3. Then:   expect의 크기가 5인지(예상하는 리스트 크기(5)) 확인
         }
         private List<NewsTable> newsList() {
             // 위 getNews() 테스트에서 사용할 newsTableList를 만들기 위한 함수
